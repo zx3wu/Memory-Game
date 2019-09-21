@@ -19,23 +19,21 @@ struct Image: Decodable {
    
 }
 
-var numberOfItemsToMatch = 2
-
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        configureGame(viewController: self, game: game)
         
         networkRequest()
     }
+    
+    var numberOfItemsToMatch = 2
     
     var countPairs: Int {
         get {
@@ -43,14 +41,11 @@ class ViewController: UIViewController {
         }
     }
     
-    
-    
     private lazy var game = GameModel(numberOfPairs: countPairs, numberOfItemsToMatch: numberOfItemsToMatch)
 
     
     var imageChoice = [String]()
     var images = Dictionary<Int, String>()
-    var textField1 = UITextField?.self
     
     func networkRequest() {
         guard let url = URL(string: "https://shopicruit.myshopify.com/admin/products.json?page=1&access_token=c32313df0d0ef512ca64d5b336a0d7c6") else {return}
@@ -75,12 +70,9 @@ class ViewController: UIViewController {
         }
         task.resume()
         
-        
-        
         game.shuffle()
     }
-    
-    
+
     
     @IBOutlet var buttons: [UIButton]!
     
@@ -111,12 +103,10 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var pairsMatched: UILabel!
     
-    
-    //now need to update new from model once the card is chosen
     func updateViewFromModel() {
         //indices returns countable range of indices in cardButtons
         pairsMatched.text = "Score: " + String(game.score)
-        if game.score == 10 {
+        if game.score == 10 || game.score*numberOfItemsToMatch == buttons.count {
             presentSuccessAlert(viewController: self)
         }
         
@@ -165,32 +155,6 @@ func image(for card: Card)-> String {
 
         return images[card.identifier] ?? ""
     }
-}
-
-func configureGame(viewController: UIViewController, game: GameModel) {
-    var alert = UIAlertController(title: "How many product do you want to match?", message: "Select a number between 2 and 4", preferredStyle: UIAlertController.Style.alert)
-    
-    alert.addTextField(configurationHandler: configurationTextField)
-    
-    let field = alert.textFields?[0] as? UITextField
-
-    alert.addTextField { (textField: UITextField) in
-        textField.placeholder = "Text here"
-        
-    }
-    
-    alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler:{ (UIAlertAction)in
-        numberOfItemsToMatch = Int(field?.text ?? "2") ?? 2
-    }))
-    
-    viewController.present(alert, animated: true, completion: {
-        print("completion block")
-    })
-}
-
-func configurationTextField(textField: UITextField!){
-    textField.text = "Type a number between 2 and 4"
-    
 }
 
 private func presentSuccessAlert(viewController: UIViewController) -> Void {

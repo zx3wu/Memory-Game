@@ -13,8 +13,11 @@ struct GameModel {
     private (set) var cards = [Card]()
     private (set) var currentIndex: Int = 0
     
+    private (set) var numberOfItemsToMatch: Int
+    
     var score = 0
-    let viewController = ViewController()
+    
+    var matchesAtID = Dictionary<Int, [Int]>()
 
     lazy var last = cards.count - 1
     //in the case there not no cards or two cards face up then we need to make it optional otherwise it will be not set
@@ -29,49 +32,46 @@ struct GameModel {
         }
     }
     
+    var cardsChosen = 0
+    
     mutating func chooseCard(at index: Int) { //GAME LOGIC
+        cards[index].isFaceUp = true
+        matchesAtID[cards[index].identifier, default: []].append(index)
+        print(matchesAtID[cards[index].identifier])
         //if the card indices chosen are not contained in the actual index it will crash and print this message
         assert(cards.indices.contains(index), "chosen index not in the cards")
         //need to ignore cards which are already matched
-        
         if !cards[index].isMatched {
+            cardsChosen += 1
             //if you choose another card that matches and its not the same card
-            if let matchIndex = indexOfOnlyFaceUp, matchIndex != index {
-                //if cards match, set both of them to isMatched is true
-                
-                
-                if cards[matchIndex].identifier == cards[index].identifier {
-                    self.score += 1
-                    cards[matchIndex].isMatched = true
-                    cards[index].isMatched =  true
+            
+                if cardsChosen < numberOfItemsToMatch + 1 {
+                    //if cards match, set all of them to isMatched is true
+                    if Set(matchesAtID[cards[index].identifier] ?? []).count == numberOfItemsToMatch {
+                        let arrayOfIndex = matchesAtID[cards[index].identifier]
+                        self.score += 1
+                        for index in Set(arrayOfIndex ?? []) {
+                                cards[index].isMatched = true
+                            
+
+                                print("matched")
+                                print(cards[index])
+                            
+                            }
+                        
+                    }
+                }
+                if cardsChosen > numberOfItemsToMatch {
+                    indexOfOnlyFaceUp = index
+                    cardsChosen = 1
+                    
+                    print("removed")
                 }
             
-                //if they dont match, when you choose the 2nd card, you have to flip up the card you chose
-                cards[index].isFaceUp = true
-
-                
-                /*if cards[indexOfOnlyFaceUp ?? 0].isFaceUp, cards[index].isFaceUp {
-                    
-                    isTwoCardsFacedUp = true
-                    
-                } else {
-                    isTwoCardsFacedUp = false
-                }*/
-                
-            } else {
-                
-                indexOfOnlyFaceUp = index
+            if cardsChosen == numberOfItemsToMatch {
+                matchesAtID.removeAll()
             }
         }
-        //model flips the card over
-        //when we call game.choose card in viewController we get the index of the card the user chooses and when they click it, it needs to flip over. If card at the index is face up, then set the card to face back down and vise versa
-        /*if cards[index].isFaceUp {
-         cards[index].isFaceUp=true
-        }else{
-         cards[index].isFaceUp=false
-         
-        }*/
-        
     }
     
     mutating func shuffle() {
@@ -101,6 +101,7 @@ struct GameModel {
     }
     //constructor to init the number of cards to start off with in order to create a game
     init(numberOfPairs: Int, numberOfItemsToMatch: Int){
+        self.numberOfItemsToMatch = numberOfItemsToMatch
         //need to create num cards, since its a struct we dont need init we can just pass params
         //if the pairs are less than 0 it will crash and print this message
         assert(numberOfPairs > 0, "must have at least one pair")
