@@ -43,8 +43,7 @@ struct GameModel {
         //need to ignore cards which are already matched
         if !cards[index].isMatched {
             cardsChosen += 1
-            //if you choose another card that matches and its not the same card
-            
+    
                 if cardsChosen < numberOfItemsToMatch + 1 {
                     //if cards match, set all of them to isMatched is true
                     if Set(matchesAtID[cards[index].identifier] ?? []).count == numberOfItemsToMatch {
@@ -52,13 +51,7 @@ struct GameModel {
                         self.score += 1
                         for index in Set(arrayOfIndex ?? []) {
                                 cards[index].isMatched = true
-                            
-
-                                print("matched")
-                                print(cards[index])
-                            
-                            }
-                        
+                        }
                     }
                 }
                 if cardsChosen > numberOfItemsToMatch {
@@ -79,12 +72,8 @@ struct GameModel {
         while(last > 0)
         {
             let rand = Int(arc4random_uniform(UInt32(last)))
-            
-            //print("swap items[\(last)] = \(cards[last]) with items[\(rand)] = \(cards[rand])")
-            
+
             cards.swapAt(last, rand)
-            
-            //print(cards)
             
             last -= 1
         }
@@ -99,24 +88,21 @@ struct GameModel {
             cards[index].isMatched = false
         }
     }
+    
     //constructor to init the number of cards to start off with in order to create a game
     init(numberOfPairs: Int, numberOfItemsToMatch: Int){
         self.numberOfItemsToMatch = numberOfItemsToMatch
-        //need to create num cards, since its a struct we dont need init we can just pass params
         //if the pairs are less than 0 it will crash and print this message
         assert(numberOfPairs > 0, "must have at least one pair")
-        //for loop to iterate each unique id
+        //for loop to iterate to get each unique id numberOfItemsToMatch times
         
         if numberOfItemsToMatch > 0 {
-        for i in 1...numberOfPairs {
+            for _ in 1...numberOfPairs {
             let card = Card()
-            //a copy of the card
-            let matchingCard = card
             //add the cards to array
-            print(numberOfItemsToMatch/2)
-            for i in 1...numberOfItemsToMatch {
+                for _ in 1...numberOfItemsToMatch {
                 cards.append(card)
-            }
+                }
             }
         }
     }

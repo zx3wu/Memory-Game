@@ -38,7 +38,6 @@ class SetUpViewController: UIViewController, UIPickerViewDelegate, UIPickerViewD
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
         pickerView.dataSource = self
         pickerView.delegate = self
         

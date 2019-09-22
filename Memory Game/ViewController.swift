@@ -7,6 +7,7 @@
 //
 
 import UIKit
+
 struct Item: Decodable {
     var products: [Product]
 }
@@ -78,15 +79,12 @@ class ViewController: UIViewController {
     
     @IBAction func tapCard(_ sender: UIButton) {
         if let cardNum = buttons.index(of: sender){
-            //when you choose card, it could cause the game to change so we need to update view
             game.chooseCard(at: cardNum)
             
             //now need to update new from model once the card is chosen so that we see card flipping over
             updateViewFromModel()
-            print("card number= \(cardNum)")
+        }
     }
-    }
-    
     
     @IBAction func reset(_ sender: Any) {
         //resets the game and shuffles the cards
@@ -98,7 +96,6 @@ class ViewController: UIViewController {
             button.backgroundColor = #colorLiteral(red: 0.5563425422, green: 0.9793455005, blue: 0, alpha: 1)
             button.setBackgroundImage(nil, for: .normal)
         }
-        
     }
     
     @IBOutlet weak var pairsMatched: UILabel!
@@ -140,13 +137,12 @@ class ViewController: UIViewController {
                     button.backgroundColor = #colorLiteral(red: 0.5563425422, green: 0.9793455005, blue: 0, alpha: 1)
                     //if not matched then hide the image
                     button.setBackgroundImage(nil, for: .normal)
-
                 }
             }
         }
     }
     
-func image(for card: Card)-> String {
+    func image(for card: Card)-> String {
         //put image in dict as we are playing the game
         if images[card.identifier] == nil, imageChoice.count>0 {
             let randomIndex = getRandomIndex(for: buttons.count)
@@ -155,12 +151,12 @@ func image(for card: Card)-> String {
 
         return images[card.identifier] ?? ""
     }
-}
-
-private func presentSuccessAlert(viewController: UIViewController) -> Void {
-    let alert = UIAlertController(title: "You Win!", message: "You matched successfully matched 10 pairs!", preferredStyle: UIAlertController.Style.alert)
-    alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-    viewController.present(alert, animated: true, completion: nil)
+    
+    private func presentSuccessAlert(viewController: UIViewController) -> Void {
+        let alert = UIAlertController(title: "You Win!", message: "You matched successfully matched \(game.score) pairs!", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        viewController.present(alert, animated: true, completion: nil)
+    }
 }
 
 
