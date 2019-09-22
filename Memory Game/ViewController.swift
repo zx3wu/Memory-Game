@@ -127,7 +127,6 @@ class ViewController: UIViewController {
                     button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
                     button.contentHorizontalAlignment = .fill
                 }
-                
     
             } else {
                 if card.isMatched {
@@ -153,7 +152,7 @@ class ViewController: UIViewController {
     }
     
     private func presentSuccessAlert(viewController: UIViewController) -> Void {
-        let alert = UIAlertController(title: "You Win!", message: "You matched successfully matched \(game.score) pairs!", preferredStyle: UIAlertController.Style.alert)
+        let alert = UIAlertController(title: "You Win!", message: "You successfully matched \(game.score) pairs!", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         viewController.present(alert, animated: true, completion: nil)
     }
